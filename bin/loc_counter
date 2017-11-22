@@ -7,9 +7,10 @@ require 'loc_counter'
 module LOCCounter
   class CLI < Thor::Group
     include Thor::Actions
-    
+
     desc 'Scans the project or individual files for Ruby source files and outputs LOC counts.'
     argument :paths, :type => :array
+
     def project
       if paths.empty?
         # no arguments received
@@ -22,26 +23,31 @@ module LOCCounter
         print_results LOCCounter::FilesCollection.new(paths).counts
       end
     end
-    
+
     def self.banner
-        "loc_counter /path/to/project             # scan the whole project\n" + 
-      "    or\n" + 
-      "  loc_counter /some/filename/mask/**/*.rb  # scan only specified files"
+      <<-BANNER
+
+loc_counter /path/to/project             # scan the whole project
+  or
+loc_counter /some/filename/mask/**/*.rb  # scan only specified files
+      BANNER
     end
-  private
+
+    private
+
     def print_results(counts)
       # '46 files processed'
       say pluralized_noun(counts.delete(:files), 'file') + ' processed'
-      
+
       results = counts.map do |type, count|
-        type  = type.to_s.capitalize
+        type = type.to_s.capitalize
         count = pluralized_noun(count, 'line')
         [type, count]
       end
-      
+
       print_table(results)
     end
-    
+
     # pluralized_noun(53, 'octopus') # => '53 octopi'
     def pluralized_noun(number, noun)
       "#{number} #{noun.pluralize(number)}"
