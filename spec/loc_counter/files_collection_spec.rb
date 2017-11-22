@@ -3,22 +3,22 @@ require 'spec_helper'
 describe LOCCounter::FilesCollection do
   before(:each) do
     stub_files
-    File.stub(:exists?).and_return(true)
+    allow(File).to receive(:exists?).and_return(true)
   end
-  
-  describe "#initialize" do
+
+  describe '#initialize' do
     before(:each) do
-      @filename1.stub(:=~).and_return(true)
-      @filename2.stub(:=~).and_return(false)
+      allow(@filename1).to receive(:=~).and_return(true)
+      allow(@filename2).to receive(:=~).and_return(false)
     end
-    
-    it "puts the filtered files list to @files" do
+
+    it 'puts the filtered files list to @files' do
       collection = LOCCounter::FilesCollection.new(@filenames)
-      collection.files.should == [@file1]
+      expect(collection.files).to eq([@file1])
     end
   end
-  
-  describe "#counts" do
+
+  describe '#counts' do
     before(:each) do
       @file1_counts = {
         :total    => 5,
@@ -26,27 +26,29 @@ describe LOCCounter::FilesCollection do
         :comments => 1,
         :code     => 4
       }
-      @file1.stub(:counts => @file1_counts)
-      
+
+      allow(@file1).to receive(:counts).and_return(@file1_counts)
+
       @file2_counts = {
         :total    => 8,
         :empty    => 1,
         :comments => 2,
         :code     => 5
       }
-      @file2.stub(:counts => @file2_counts)
+
+      allow(@file2).to receive(:counts).and_return(@file2_counts)
     end
-    
-    it "sums line counts from all files and returns them in a hash" do
+
+    it 'sums line counts from all files and returns them in a hash' do
       collection = LOCCounter::FilesCollection.new(@filenames)
       collection.instance_variable_set(:@files, @files)
       counts = collection.counts
-      
-      counts[:total].should     == @file1_counts[:total] + @file2_counts[:total]
-      counts[:empty].should     == @file1_counts[:empty] + @file2_counts[:empty]
-      counts[:comments].should  == @file1_counts[:comments] + @file2_counts[:comments]
-      counts[:code].should      == @file1_counts[:code] + @file2_counts[:code]
-      counts[:files].should     == @files.count
+
+      expect(counts[:total]).to eq(@file1_counts[:total] + @file2_counts[:total])
+      expect(counts[:empty]).to eq(@file1_counts[:empty] + @file2_counts[:empty])
+      expect(counts[:comments]).to eq(@file1_counts[:comments] + @file2_counts[:comments])
+      expect(counts[:code]).to eq(@file1_counts[:code] + @file2_counts[:code])
+      expect(counts[:files]).to eq(@files.count)
     end
   end
 end
