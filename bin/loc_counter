@@ -1,58 +1,7 @@
 #!/usr/bin/env ruby
+
 require 'rubygems'
-require 'thor/group'
-require 'active_support/inflector'
-require 'loc_counter'
+require 'commander'
+require 'loc_counter/cli'
 
-module LOCCounter
-  class CLI < Thor::Group
-    include Thor::Actions
-
-    desc 'Scans the project or individual files for Ruby source files and outputs LOC counts.'
-    argument :paths, :type => :array
-
-    def project
-      if paths.empty?
-        # no arguments received
-        say 'No path was given'
-      elsif paths.count == 1 && File.directory?(paths.first)
-        # received one argument which is a directory path
-        print_results LOCCounter::Project.new(paths.first).counts
-      else
-        # received one or more file paths
-        print_results LOCCounter::FilesCollection.new(paths).counts
-      end
-    end
-
-    def self.banner
-      <<-BANNER
-
-loc_counter /path/to/project             # scan the whole project
-  or
-loc_counter /some/filename/mask/**/*.rb  # scan only specified files
-      BANNER
-    end
-
-    private
-
-    def print_results(counts)
-      # '46 files processed'
-      say pluralized_noun(counts.delete(:files), 'file') + ' processed'
-
-      results = counts.map do |type, count|
-        type = type.to_s.capitalize
-        count = pluralized_noun(count, 'line')
-        [type, count]
-      end
-
-      print_table(results)
-    end
-
-    # pluralized_noun(53, 'octopus') # => '53 octopi'
-    def pluralized_noun(number, noun)
-      "#{number} #{noun.pluralize(number)}"
-    end
-  end
-end
-
-LOCCounter::CLI.start
+LOCCounter::CLI.new.run

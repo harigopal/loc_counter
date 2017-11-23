@@ -1,6 +1,6 @@
 # encoding: utf-8
 $: << File.expand_path('../lib', __FILE__)
-require 'loc_counter/version'
+require_relative 'lib/loc_counter/version'
 
 Gem::Specification.new do |s|
   s.name        = 'loc_counter'
@@ -19,7 +19,8 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.2.0'
 
-  s.add_runtime_dependency 'thor', '~> 0.20'
+  s.add_runtime_dependency 'commander', '~> 4.4'
+  s.add_runtime_dependency 'terminal-table', '~> 1.8'
   s.add_runtime_dependency 'activesupport', '~> 5.1'
 
   s.add_development_dependency 'rake', '~> 12.3'
