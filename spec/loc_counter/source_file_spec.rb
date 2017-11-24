@@ -27,7 +27,7 @@ describe LOCCounter::SourceFile do
       end
 
       it 'puts the result of File.readlines to @lines' do
-        expect(File).to receive(:readlines).with(@filename)
+        expect(File).to receive(:readlines).with(@filename, encoding: 'UTF-8')
         file = LOCCounter::SourceFile.new(@filename)
         expect(file.lines).to eq(@lines)
       end
