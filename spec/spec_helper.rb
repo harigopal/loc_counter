@@ -1,4 +1,4 @@
-require 'loc_counter'
+require_relative '../lib/loc_counter'
 
 support_dir = File.expand_path('../support', __FILE__)
 Dir.glob("#{support_dir}/**/*.rb").each { |file| require file }
