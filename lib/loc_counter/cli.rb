@@ -47,11 +47,10 @@ module LOCCounter
       # '46 files processed'
       say pluralized_noun(counts.delete(:files), 'file') + ' processed'
 
-      counts.each_with_object(Terminal::Table.new) do |(type, count), table|
-        type = type.to_s.capitalize
-        count = pluralized_noun(count, 'line')
-        table.add_row [type, count]
-      end
+      table = Terminal::Table.new(rows: [['', 'Total', 'Empty', 'Code', 'Comments']])
+      table << :separator
+      table.add_row(['Ruby', counts[:total], counts[:empty], counts[:code], counts[:comments]])
+      table
     end
 
     # pluralized_noun(53, 'octopus') # => '53 octopi'
